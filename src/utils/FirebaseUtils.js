@@ -6,6 +6,8 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
@@ -96,3 +98,15 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
   return await signInWithEmailAndPassword(auth, email, password);
 };
+
+//auth tells signout which user to find
+export const signOutUser = async () => await signOut(auth);
+
+//whenever this auth state changes, we call the callback function, when we instantiate this function we callback
+//Note: getAuth() has been keeping track of the different sign in features we have been calling and it persists this between refresh
+
+export const onAuthStateChangedListener = (callback) =>
+  //whenever auth changes, callback function will run
+  //this is a permenatly open listener always listening to changes
+  //we need to tell it to stop listening when the usercontext component unmounts, memory leak
+  onAuthStateChanged(auth, callback);

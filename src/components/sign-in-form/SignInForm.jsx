@@ -18,20 +18,30 @@ const defaultFormFields = {
 
 const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
-
   const { email, password } = formFields;
 
-  console.log(formFields);
+  // console.log(formFields);
+
+  const resetFormFields = () => {
+    setFormFields(defaultFormFields);
+  };
+
+  const signInWithGoogle = async () => {
+    await signInWithGooglePopup();
+
+    // console.log(response);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await signInAuthUserWithEmailAndPassword(
+      const { user } = await signInAuthUserWithEmailAndPassword(
         email,
         password
       );
-      console.log(response);
+
+      // console.log(response);
       resetFormFields();
     } catch (error) {
       //these are specific error codes from firebase if we log the error for sign in
@@ -46,16 +56,6 @@ const SignInForm = () => {
           console.log(error);
       }
     }
-  };
-
-  const resetFormFields = () => {
-    setFormFields(defaultFormFields);
-  };
-
-  const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    // console.log(response);
-    await createUserDocumentFromAuth(user);
   };
 
   const handleChange = (event) => {

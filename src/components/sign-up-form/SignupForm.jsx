@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import FormInput from "../form-input/FormInput";
 import Button from "../button/Button";
@@ -19,10 +19,9 @@ const defaultFormFields = {
 
 const SignupForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
-
   const { displayName, email, password, confirmPassword } = formFields;
 
-  console.log(formFields);
+  // console.log(formFields);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -45,6 +44,8 @@ const SignupForm = () => {
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         alert("Cannot create user, email already in use.");
+      } else {
+        console.log("user creation encountered an error: ", error);
       }
     }
   };
