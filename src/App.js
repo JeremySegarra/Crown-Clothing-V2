@@ -7,11 +7,13 @@ import Shop from "./routes/shop/Shop";
 import Checkout from "./routes/checkout/Checkout";
 
 const App = () => {
+  //for shop we have nested routes if we use ship/* is a wildcard that expects further routes
+  //Shop component has routes set up as well for children routes
   return (
     <Routes>
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />}></Route>
-        <Route path="shop" element={<Shop />}></Route>
+        <Route path="shop/*" element={<Shop />}></Route>
         <Route path="auth" element={<Authentication />}></Route>
         <Route path="checkout" element={<Checkout />}></Route>
       </Route>

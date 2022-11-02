@@ -10,7 +10,17 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+//firestore governs our database
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+} from "firebase/firestore";
 
 // Your web app's Firebase configuration
 //Allows us to make CRUD actions to our DB
@@ -44,6 +54,74 @@ export const signInWithGoogleRedirect = () =>
 
 //initialize our db
 export const db = getFirestore();
+
+//collection key example is users in our db
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  //we create a collection ref and give it a key such as categories
+  const collectionRef = collection(db, collectionKey);
+
+  //in order to write all our objects to our collection in 1 succesful transaction we need to use writeBatch()
+  const batch = writeBatch(db); //now we have a batch instance
+
+  objectsToAdd.forEach((object) => {
+    //the key is the title
+    const docRef = doc(collectionRef, object.title.toLowerCase()); //we can pass this our collectionRef because colRef knows which db its from already
+
+    batch.set(docRef, object); //so we can set this location i.e docRef with the value of object
+  });
+
+  //this commit() fires off the transaction
+  await batch.commit();
+  console.log("Done");
+};
+
+export const getCategoriesAndDocuments = async () => {
+  //first we need the collection ref
+  const collectionRef = collection(db, "categories");
+
+  const q = query(collectionRef);
+
+  //allows us to fetch the document snapshots
+  const querySnapshot = await getDocs(q);
+  console.log("this is the querySnapshot: ", querySnapshot);
+
+  //querySnapshot.docs returns us an array of all the documents in the querySnapshot
+  //we can use reduce in order to create the finished structure of this object
+  //SIDE NOTE: this works because we already added the data in our batch function so acc[title.toLowerCase()] = items
+  console.log("about to enter querySnapshot.docs.reduce");
+
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    console.log("this is acc: ", acc);
+    console.log("this is docSnapshot: ", docSnapshot);
+    const { title, items } = docSnapshot.data();
+    console.log("this is docSnapshot.data(): ", docSnapshot.data());
+
+    //acc[title.toLowerCase()] = items; is saying at the Hats key set its value to items which is an array of items
+    //we need to lower case because our key our collection key in the DB is lowercase and the title in the document object is uppercase
+    /*
+    KEY :  VALUE
+    hats: set value to [{}, {}, {}]
+    hats: [{}, {}, {}]
+    */
+    acc[title.toLowerCase()] = items;
+    console.log("this is acc after acc[title.toLowerCase()] = items; ", acc);
+    return acc;
+  }, {});
+
+  console.log("this is our completed category map after reduce: ", categoryMap);
+  return categoryMap;
+};
+
+// Structure of categories collection
+/* 
+hats: {
+  title: 'hats',
+  items: [{}, {}, {}]
+}
+*/
 
 export const createUserDocumentFromAuth = async (
   userAuth,

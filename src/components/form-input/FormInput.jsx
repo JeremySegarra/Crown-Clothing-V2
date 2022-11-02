@@ -1,20 +1,17 @@
-import "./FormInput.Styles.scss";
+import { FromInputLabel, Input, Group } from "./FormInput.Styles.jsx";
 
 const FormInput = ({ label, ...otherProps }) => {
+  //Here we can pass just the number if it is greater than 0 it will be truthy thus envoking the shrink styles
   return (
-    <div className="group">
-      <input className="form-input" {...otherProps} />
+    <Group>
+      <Input {...otherProps} />
 
       {label && (
-        <label
-          className={`${
-            otherProps.value.length ? "shrink" : ""
-          } form-input-label`}
-        >
+        <FromInputLabel shrink={otherProps.value.length}>
           {label}
-        </label>
+        </FromInputLabel>
       )}
-    </div>
+    </Group>
   );
 };
 
