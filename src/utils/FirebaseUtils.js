@@ -86,42 +86,10 @@ export const getCategoriesAndDocuments = async () => {
 
   //allows us to fetch the document snapshots
   const querySnapshot = await getDocs(q);
-  console.log("this is the querySnapshot: ", querySnapshot);
 
-  //querySnapshot.docs returns us an array of all the documents in the querySnapshot
-  //we can use reduce in order to create the finished structure of this object
-  //SIDE NOTE: this works because we already added the data in our batch function so acc[title.toLowerCase()] = items
-  console.log("about to enter querySnapshot.docs.reduce");
-
-  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-    console.log("this is acc: ", acc);
-    console.log("this is docSnapshot: ", docSnapshot);
-    const { title, items } = docSnapshot.data();
-    console.log("this is docSnapshot.data(): ", docSnapshot.data());
-
-    //acc[title.toLowerCase()] = items; is saying at the Hats key set its value to items which is an array of items
-    //we need to lower case because our key our collection key in the DB is lowercase and the title in the document object is uppercase
-    /*
-    KEY :  VALUE
-    hats: set value to [{}, {}, {}]
-    hats: [{}, {}, {}]
-    */
-    acc[title.toLowerCase()] = items;
-    console.log("this is acc after acc[title.toLowerCase()] = items; ", acc);
-    return acc;
-  }, {});
-
-  console.log("this is our completed category map after reduce: ", categoryMap);
-  return categoryMap;
+  //this will give us back the categories as an array
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
 };
-
-// Structure of categories collection
-/* 
-hats: {
-  title: 'hats',
-  items: [{}, {}, {}]
-}
-*/
 
 export const createUserDocumentFromAuth = async (
   userAuth,
@@ -188,3 +156,50 @@ export const onAuthStateChangedListener = (callback) =>
   //this is a permenatly open listener always listening to changes
   //we need to tell it to stop listening when the usercontext component unmounts, memory leak
   onAuthStateChanged(auth, callback);
+
+//****** Getting our Categories Map before redux busniess logic migration too selector ******/
+
+// export const getCategoriesAndDocuments = async () => {
+//first we need the collection ref
+//   const collectionRef = collection(db, "categories");
+
+//   const q = query(collectionRef);
+
+//allows us to fetch the document snapshots
+//   const querySnapshot = await getDocs(q);
+//   console.log("this is the querySnapshot: ", querySnapshot);
+
+//querySnapshot.docs returns us an array of all the documents in the querySnapshot
+//we can use reduce in order to create the finished structure of this object
+//SIDE NOTE: this works because we already added the data in our batch function so acc[title.toLowerCase()] = items
+//   console.log("about to enter querySnapshot.docs.reduce");
+
+//   const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+//     console.log("this is acc: ", acc);
+//     console.log("this is docSnapshot: ", docSnapshot);
+//     const { title, items } = docSnapshot.data();
+//     console.log("this is docSnapshot.data(): ", docSnapshot.data());
+
+//acc[title.toLowerCase()] = items; is saying at the Hats key set its value to items which is an array of items
+//we need to lower case because our key our collection key in the DB is lowercase and the title in the document object is uppercase
+//
+//     KEY :  VALUE
+//     hats: set value to [{}, {}, {}]
+//     hats: [{}, {}, {}]
+//
+//     acc[title.toLowerCase()] = items;
+//     console.log("this is acc after acc[title.toLowerCase()] = items; ", acc);
+//     return acc;
+//   }, {});
+
+//   console.log("this is our completed category map after reduce: ", categoryMap);
+//   return categoryMap;
+// };
+
+// Structure of categories collection
+/* 
+hats: {
+  title: 'hats',
+  items: [{}, {}, {}]
+}
+*/

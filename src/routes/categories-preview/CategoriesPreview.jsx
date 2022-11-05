@@ -1,11 +1,12 @@
-import { Fragment, useContext } from "react";
+import { Fragment } from "react";
+import { useSelector } from "react-redux";
 
-import { CategoriesContext } from "../../contexts/CategoriesContext";
-
+import { selectCategoriesMap } from "../../store/categories/category.selector";
 import CategoryPreview from "../../components/category-preview/CategoryPreview";
 
 const CategoriesPreview = () => {
-  const { categoriesMap } = useContext(CategoriesContext);
+  const categoriesMap = useSelector(selectCategoriesMap);
+
   //Object.keys() we give this an object and it will return an array of keys (hats, jackets, mens, ect.)
   return (
     <Fragment>
