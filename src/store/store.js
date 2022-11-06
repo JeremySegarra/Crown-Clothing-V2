@@ -25,7 +25,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 //middlewares run before an action hits the reducers, so when we dispatch an action it hits the middleware first
 //if we are in development this will filter anything with falsyness because we do not want to pass false into createStore so we get an empty array [] instead of false
 //can also put "development" as value to test this logger
-
+console.log(
+  "Checking production vs development (process.env.NODE_ENV): ",
+  process.env.NODE_ENV
+);
 const middleWares = [
   process.env.NODE_ENV !== "production" && logger,
   thunk,
