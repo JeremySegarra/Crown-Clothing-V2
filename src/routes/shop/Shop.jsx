@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { getCategoriesAndDocuments } from "../../utils/FirebaseUtils";
 import { useDispatch } from "react-redux";
 
-import { setCategories } from "../../store/categories/category.action";
+import { fetchCategoriesAsync } from "../../store/categories/category.action";
 
 import CategoriesPreview from "../categories-preview/CategoriesPreview";
 import Category from "../category/Category";
@@ -14,15 +14,13 @@ const Shop = () => {
 
   useEffect(() => {
     const getCategoriesMap = async () => {
-      const categoriesArray = await getCategoriesAndDocuments("categories");
+      console.error("ABOUT TO DISPATCH FETCH CATEGORIES TO REDUX THUNK");
 
-      console.error("ABOUT TO START REDUCING OVER CATEGORIES ARRAY");
-      console.log("categoriesArray: ", categoriesArray);
-      dispatch(setCategories(categoriesArray));
+      dispatch(fetchCategoriesAsync());
     };
 
     getCategoriesMap();
-  }, [dispatch]);
+  }, []);
 
   return (
     <Routes>

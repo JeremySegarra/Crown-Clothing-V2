@@ -84,6 +84,9 @@ export const getCategoriesAndDocuments = async () => {
 
   const q = query(collectionRef);
 
+  //allows us to throw and error to see our failed state when fetching categories
+  // await Promise.reject(new Error("new error woops"));
+
   //allows us to fetch the document snapshots
   const querySnapshot = await getDocs(q);
 
